@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { Suspense } from "react";
 import { QuoteWidget } from "@/components/QuoteWidget";
 import { SectionTitle } from "@/components/SectionTitle";
 import { TourCard } from "@/components/TourCard";
@@ -17,6 +18,7 @@ import {
   testimonials,
   tours,
   whatsappHref,
+  firstParam,
 } from "@/lib/site";
 
 const bands: Record<(typeof cabs)[number]["id"], string> = {
@@ -26,20 +28,61 @@ const bands: Record<(typeof cabs)[number]["id"], string> = {
   tempo: "bg-gold",
 };
 
-export default function HomePage() {
+type RideSearch = {
+  from?: string | string[];
+  to?: string | string[];
+  fromPlace?: string | string[];
+  toPlace?: string | string[];
+  date?: string | string[];
+  cab?: string | string[];
+  note?: string | string[];
+  name?: string | string[];
+  phone?: string | string[];
+  guests?: string | string[];
+};
+
+async function HomeRide({ searchParams }: { searchParams: Promise<RideSearch> }) {
+  const query = await searchParams;
+  const initial = {
+    from: firstParam(query.from),
+    to: firstParam(query.to),
+    fromPlace: firstParam(query.fromPlace),
+    toPlace: firstParam(query.toPlace),
+    date: firstParam(query.date),
+    cab: firstParam(query.cab),
+    note: firstParam(query.note),
+    name: firstParam(query.name),
+    phone: firstParam(query.phone),
+    guests: firstParam(query.guests),
+  };
+  return <QuoteWidget key={Object.values(initial).join("|")} initial={initial} />;
+}
+
+export default function HomePage({
+  searchParams,
+}: {
+  searchParams: Promise<RideSearch>;
+}) {
+  const featured = fares[0];
+  const board = fares.slice(1, 6);
+  const [leadService, ...otherServices] = services;
+  const [leadTour, ...sideTours] = tours.slice(0, 3);
+  const [leadNote, ...otherNotes] = testimonials;
+
   return (
     <>
-      <section className="hero-coast relative overflow-hidden text-foam">
-        <div className="wrap relative z-10 grid items-center gap-10 pt-14 pb-24 lg:grid-cols-[1.05fr_0.95fr] lg:pt-20 lg:pb-28">
-          <div>
-            <p className="eyebrow text-gold">Susegad, on schedule</p>
-            <h1 className="mt-4 max-w-xl text-5xl leading-[0.95] md:text-7xl">
-              Cabs for the <span className="italic text-gold">coast</span> of Goa.
+      <section className="home-hero relative overflow-hidden text-foam">
+        <div className="wrap relative z-10 grid items-start gap-10 pt-12 pb-20 lg:grid-cols-[1.05fr_0.95fr] lg:pt-16 lg:pb-24">
+          <div className="lg:pt-6">
+            <p className="eyebrow text-gold">Calangute desk · both airports</p>
+            <h1 className="mt-5 max-w-xl text-[3.4rem] leading-[0.9] md:text-8xl">
+              The coast,
+              <span className="mt-1 block italic text-gold">on your clock.</span>
             </h1>
-            <p className="mt-5 max-w-lg text-lg leading-8 text-foam/85">
-              Coastal Cabs meets flights at Mopa and Dabolim, then takes you to the beach, Old Goa, or a full day down to Palolem.
+            <p className="mt-6 max-w-md text-lg leading-8 text-foam/80">
+              Coastal Cabs meets the flight at Mopa or Dabolim, then stays with you for the beach, Old Goa, or the long road to Palolem.
             </p>
-            <div className="mt-7 flex flex-col gap-3 sm:flex-row">
+            <div className="mt-8 flex flex-col gap-3 sm:flex-row">
               <a className="btn btn-gold" href={`tel:${phoneTel}`}>
                 Call {phoneDisplay}
               </a>
@@ -52,110 +95,196 @@ export default function HomePage() {
                 WhatsApp the desk
               </a>
             </div>
-            <dl className="mt-8 grid max-w-lg grid-cols-3 gap-3 text-sm">
-              <div className="glass-pill">
-                <dt className="text-foam/65">Airports</dt>
-                <dd className="font-display text-2xl">GOX + GOI</dd>
+            <dl className="mt-10 grid max-w-lg grid-cols-3 gap-4 text-sm">
+              <div className="home-stat">
+                <dd className="font-display text-3xl">2</dd>
+                <dt className="mt-1 text-foam/65">Airports</dt>
               </div>
-              <div className="glass-pill">
-                <dt className="text-foam/65">Desk</dt>
-                <dd className="font-display text-2xl">24 hours</dd>
+              <div className="home-stat">
+                <dd className="font-display text-3xl">24h</dd>
+                <dt className="mt-1 text-foam/65">Desk</dt>
               </div>
-              <div className="glass-pill">
-                <dt className="text-foam/65">Fare</dt>
-                <dd className="font-display text-2xl">Fixed first</dd>
+              <div className="home-stat">
+                <dd className="font-display text-3xl">Fixed</dd>
+                <dt className="mt-1 text-foam/65">Fare first</dt>
               </div>
             </dl>
           </div>
-          <QuoteWidget />
+          <Suspense fallback={<div className="quote-panel h-80 animate-pulse" />}>
+            <HomeRide searchParams={searchParams} />
+          </Suspense>
         </div>
         <Wave />
       </section>
 
-      <section className="wrap py-16">
-        <SectionTitle
-          eyebrow="Popular drops"
-          title="Starting fares people actually book"
-          text="One way, sedan price. SUVs and Innovas are on the fare sheet. Tolls stay extra."
-        />
-        <div className="mt-8 grid gap-4 md:grid-cols-2">
-          {fares.slice(0, 6).map((fare) => (
-            <Link
-              key={`${fare.from}-${fare.to}`}
-              href={bookHref({ from: fare.from, to: fare.to, cab: "sedan" })}
-              className="paper-card fare-card flex items-end justify-between gap-4 p-5 pl-6"
-            >
-              <div>
-                <p className="text-sm text-ink/60">{fare.from}</p>
-                <p className="font-display text-2xl">to {fare.to}</p>
-                <p className="mt-2 text-sm text-ink/60">
-                  {fare.km} km · {formatDrive(fare.minutes)}
-                </p>
-              </div>
-              <p className="text-right">
-                <span className="block font-display text-2xl text-sea">{inr(fare.sedan)}</span>
-                <span className="text-xs font-bold uppercase tracking-wider text-ink/50">sedan</span>
-              </p>
-            </Link>
-          ))}
+      <section className="wrap py-16 md:py-20">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <SectionTitle
+            eyebrow="Popular drops"
+            title="A fare you can read before you land."
+            text="Sedan starting prices, one way. Tolls stay extra."
+          />
+          <Link href="/fares" className="btn btn-ink shrink-0">
+            Full fare sheet
+          </Link>
         </div>
-        <Link href="/fares" className="btn btn-ink mt-6">
-          Full fare sheet
-        </Link>
+        <div className="mt-10 grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr]">
+          <Link
+            href={bookHref({ from: featured.from, to: featured.to, cab: "sedan" })}
+            className="paper-card fare-card group block p-7 pl-8"
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-laterite">Most booked</p>
+            <p className="mt-4 text-sm text-ink/55">{featured.from}</p>
+            <p className="font-display text-5xl leading-none md:text-6xl">to {featured.to}</p>
+            <p className="mt-4 text-sm text-ink/60">
+              {featured.km} km · {formatDrive(featured.minutes)}
+            </p>
+            <p className="mt-8 font-display text-4xl text-sea">{inr(featured.sedan)}</p>
+            <p className="text-xs font-bold uppercase tracking-[0.16em] text-ink/45">sedan · book this ride</p>
+          </Link>
+          <div>
+            {board.map((fare) => (
+              <Link
+                key={`${fare.from}-${fare.to}`}
+                href={bookHref({ from: fare.from, to: fare.to, cab: "sedan" })}
+                className="route-row"
+              >
+                <span>
+                  <span className="block text-sm text-ink/55">{fare.from}</span>
+                  <span className="font-display text-2xl">to {fare.to}</span>
+                  <span className="mt-1 block text-xs text-ink/50">
+                    {fare.km} km · {formatDrive(fare.minutes)}
+                  </span>
+                </span>
+                <span className="route-price text-right">
+                  <span className="block font-display text-2xl text-sea">{inr(fare.sedan)}</span>
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-ink/40">sedan</span>
+                </span>
+              </Link>
+            ))}
+          </div>
+        </div>
       </section>
 
-      <section className="bg-paper py-16">
+      <section className="bg-paper py-16 md:py-20">
         <div className="wrap">
-          <SectionTitle
-            eyebrow="How a booking works"
-            title="Three messages, then a driver"
-          />
-          <ol className="mt-8 grid gap-4 md:grid-cols-3">
+          <SectionTitle eyebrow="How a booking works" title="Three messages, then a driver." />
+          <ol className="mt-10 grid gap-px overflow-hidden rounded-[1.8rem] border border-line bg-line md:grid-cols-3">
             {steps.map((step, index) => (
-              <li key={step.title} className="lift-card rounded-[1.6rem] border border-line bg-foam p-6 shadow-[0_18px_40px_-32px_rgba(18,33,28,0.6)]">
-                <span className="inline-flex h-12 w-12 items-center justify-center rounded-2xl bg-gradient-to-br from-laterite to-[#8d3018] font-display text-xl text-foam shadow-lg">
-                  {index + 1}
-                </span>
+              <li key={step.title} className="bg-foam p-7">
+                <p className="font-display text-5xl text-gold">{String(index + 1).padStart(2, "0")}</p>
                 <h3 className="mt-4 text-2xl">{step.title}</h3>
-                <p className="mt-2 text-sm leading-6 text-ink/75">{step.text}</p>
+                <p className="mt-2 max-w-xs text-sm leading-6 text-ink/75">{step.text}</p>
               </li>
             ))}
           </ol>
         </div>
       </section>
 
-      <section className="wrap py-16">
-        <SectionTitle eyebrow="Services" title="Airport nights to wedding mornings" />
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {services.map((service) => (
-            <article key={service.title} className="paper-card lift-card p-6">
-              <h3 className="text-2xl">{service.title}</h3>
-              <p className="mt-2 text-sm leading-6 text-ink/75">{service.text}</p>
-              <Link href={bookHref({ note: service.title })} className="mt-4 inline-block text-sm font-bold text-sea">
-                Request this ride
+      <section className="wrap py-16 md:py-20">
+        <SectionTitle eyebrow="Services" title="Airport nights to wedding mornings." />
+        <div className="mt-10 grid gap-6 lg:grid-cols-[0.85fr_1.15fr]">
+          <Link
+            href={bookHref({ note: leadService.title })}
+            className="service-photo flex min-h-80 flex-col justify-end rounded-[1.8rem] p-7 text-foam"
+          >
+            <p className="text-xs font-bold uppercase tracking-[0.18em] text-gold">Desk favourite</p>
+            <h3 className="mt-3 text-4xl">{leadService.title}</h3>
+            <p className="mt-3 max-w-sm text-sm leading-6 text-foam/85">{leadService.text}</p>
+            <span className="mt-5 text-sm font-bold text-gold">Request this ride</span>
+          </Link>
+          <div className="divide-y divide-line border-y border-line">
+            {otherServices.map((service, index) => (
+              <Link
+                key={service.title}
+                href={bookHref({ note: service.title })}
+                className="group grid gap-2 py-5 sm:grid-cols-[4rem_1fr] sm:gap-4"
+              >
+                <span className="font-display text-2xl text-sea/70">{String(index + 2).padStart(2, "0")}</span>
+                <span>
+                  <span className="block font-display text-2xl group-hover:text-sea">{service.title}</span>
+                  <span className="mt-1 block text-sm leading-6 text-ink/70">{service.text}</span>
+                </span>
               </Link>
-            </article>
-          ))}
+            ))}
+          </div>
         </div>
       </section>
 
-      <section className="relative overflow-hidden bg-sea-deep py-16 text-foam">
-        <div className="pointer-events-none absolute -top-24 right-0 h-72 w-72 rounded-full bg-gold/20 blur-3xl" />
+      <section className="bg-sea-deep py-16 text-foam md:py-20">
         <div className="wrap">
-          <p className="text-xs font-bold uppercase tracking-[0.2em] text-gold">Fleet</p>
-          <h2 className="mt-2 max-w-xl text-3xl md:text-4xl">A car that fits the bags, not the other way around.</h2>
-          <div className="mt-8 grid gap-4 md:grid-cols-2 xl:grid-cols-4">
+          <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+            <div>
+              <p className="eyebrow">Fleet</p>
+              <h2 className="mt-3 max-w-xl text-4xl md:text-5xl">Pick the car by the bags, then the seats.</h2>
+            </div>
+            <Link href="/fleet" className="btn btn-line">
+              See the fleet
+            </Link>
+          </div>
+          <div className="mt-10 grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
             {cabs.map((cab) => (
-              <article key={cab.id} className="lift-card overflow-hidden rounded-[1.6rem] border border-white/10 bg-white/10">
-                <div className={`h-2 ${bands[cab.id]}`} />
-                <div className="p-5">
-                  <h3 className="text-2xl">{cab.name}</h3>
-                  <p className="text-sm text-foam/70">{cab.cars}</p>
-                  <p className="mt-4 font-display text-3xl">{cab.seats}</p>
-                  <p className="mt-2 text-sm text-foam/70">From {inr(cab.startsAt)} on airport drops</p>
-                  <Link href={bookHref({ cab: cab.id })} className="btn btn-gold mt-5 w-full">
-                    Book {cab.name}
-                  </Link>
+              <article key={cab.id} className="flex flex-col rounded-[1.6rem] border border-white/10 bg-white/10 p-5">
+                <div className={`h-1.5 w-14 rounded-full ${bands[cab.id]}`} />
+                <h3 className="mt-5 text-3xl">{cab.name}</h3>
+                <p className="text-sm text-foam/65">{cab.cars}</p>
+                <p className="mt-6 font-display text-4xl">{cab.seats.replace(" guests", "")}</p>
+                <p className="text-xs font-bold uppercase tracking-[0.16em] text-foam/50">guests</p>
+                <p className="mt-4 text-sm text-foam/70">From {inr(cab.startsAt)}</p>
+                <Link href={bookHref({ cab: cab.id })} className="btn btn-gold mt-6 w-full">
+                  Book {cab.name}
+                </Link>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="wrap py-16 md:py-20">
+        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
+          <SectionTitle
+            eyebrow="Day tours"
+            title="The cab waits while you swim."
+            text="Entry tickets stay separate. The driver and the hours are in the price."
+          />
+          <Link href="/tours" className="btn btn-ink shrink-0">
+            All tours
+          </Link>
+        </div>
+        <div className="mt-10 grid gap-4 lg:grid-cols-[1.15fr_0.85fr]">
+          <Link href={`/tours/${leadTour.slug}`} className="paper-card group relative min-h-[28rem] overflow-hidden">
+            <img src={leadTour.image} alt="" className="absolute inset-0 h-full w-full object-cover object-[center_70%] transition duration-700 group-hover:scale-105" />
+            <div className="absolute inset-0 bg-gradient-to-t from-ink via-ink/25 to-ink/10" />
+            <div className="relative flex h-full min-h-[28rem] flex-col justify-end p-7 text-foam">
+              <p className="text-xs font-bold uppercase tracking-[0.16em] text-gold">
+                {leadTour.region} · {leadTour.hours}
+              </p>
+              <h3 className="mt-2 text-4xl md:text-5xl">{leadTour.title}</h3>
+              <p className="mt-3 max-w-md text-sm leading-6 text-foam/80">{leadTour.summary}</p>
+              <p className="mt-5 font-display text-4xl">{inr(leadTour.from)}</p>
+            </div>
+          </Link>
+          <div className="grid gap-4">
+            {sideTours.map((tour) => (
+              <TourCard key={tour.slug} tour={tour} />
+            ))}
+          </div>
+        </div>
+      </section>
+
+      <section className="bg-paper py-16 md:py-20">
+        <div className="wrap">
+          <SectionTitle eyebrow="Where we drive" title="North sand, the capital, the south bays." />
+          <div className="mt-10 grid gap-8 md:grid-cols-3">
+            {coasts.map((coast) => (
+              <article key={coast.name}>
+                <h3 className="text-3xl">{coast.name}</h3>
+                <div className="mt-4 flex flex-wrap gap-2">
+                  {coast.places.map((place) => (
+                    <span key={place} className="place-chip">
+                      {place}
+                    </span>
+                  ))}
                 </div>
               </article>
             ))}
@@ -163,65 +292,37 @@ export default function HomePage() {
         </div>
       </section>
 
-      <section className="wrap py-16">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <SectionTitle
-            eyebrow="Day tours"
-            title="The coast, with the cab waiting"
-            text="Entry tickets stay separate. The driver and the hours are in the price."
-          />
-          <Link href="/tours" className="btn btn-ink">
-            All tours
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-4 md:grid-cols-2 lg:grid-cols-3">
-          {tours.slice(0, 3).map((tour) => (
-            <TourCard key={tour.slug} tour={tour} />
-          ))}
-        </div>
-      </section>
-
-      <section className="bg-paper py-16">
-        <div className="wrap">
-          <SectionTitle eyebrow="Where we drive" title="North sand, the capital, and the south bays" />
-          <div className="mt-8 grid gap-4 md:grid-cols-3">
-            {coasts.map((coast) => (
-              <article key={coast.name} className="rounded-3xl border border-line bg-foam p-5">
-                <h3 className="text-2xl">{coast.name}</h3>
-                <p className="mt-3 text-sm leading-7 text-ink/75">{coast.places.join(" · ")}</p>
-              </article>
+      <section className="wrap py-16 md:py-20">
+        <SectionTitle eyebrow="Guest notes" title="What the last rides sounded like." />
+        <div className="mt-10 grid gap-6 lg:grid-cols-[1.3fr_0.7fr]">
+          <figure className="paper-card p-8 md:p-10">
+            <blockquote className="font-display text-3xl leading-snug italic md:text-4xl">“{leadNote.quote}”</blockquote>
+            <figcaption className="mt-6 text-sm text-ink/70">
+              <span className="font-semibold text-ink">{leadNote.name}</span> · {leadNote.from}
+              <span className="mt-1 block">{leadNote.trip}</span>
+            </figcaption>
+          </figure>
+          <div className="grid gap-4">
+            {otherNotes.map((item) => (
+              <figure key={item.name} className="rounded-[1.6rem] border border-line bg-paper p-6">
+                <blockquote className="font-display text-xl leading-snug">“{item.quote}”</blockquote>
+                <figcaption className="mt-4 text-sm text-ink/70">
+                  <span className="font-semibold text-ink">{item.name}</span> · {item.trip}
+                </figcaption>
+              </figure>
             ))}
           </div>
         </div>
       </section>
 
-      <section className="wrap py-16">
-        <SectionTitle eyebrow="Guest notes" title="Recent rides, in their words" />
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          {testimonials.map((item) => (
-            <figure key={item.name} className="paper-card lift-card p-6">
-              <blockquote className="font-display text-2xl leading-snug">
-                <span className="text-gold" aria-hidden="true">
-                  “
-                </span>
-                {item.quote}
-              </blockquote>
-              <figcaption className="mt-4 text-sm text-ink/70">
-                <span className="font-semibold text-ink">{item.name}</span> · {item.from}
-                <span className="mt-1 block">{item.trip}</span>
-              </figcaption>
-            </figure>
-          ))}
-        </div>
-      </section>
-
       <section className="cta-band text-foam">
-        <div className="wrap flex flex-col items-start justify-between gap-6 py-14 md:flex-row md:items-center">
+        <div className="wrap flex flex-col items-start justify-between gap-6 py-16 md:flex-row md:items-center">
           <div>
-            <h2 className="text-3xl md:text-4xl">Send the flight number. We will be at arrivals.</h2>
-            <p className="mt-2 max-w-xl text-foam/80">Mopa or Dabolim, including the landings after the last bus.</p>
+            <p className="eyebrow">Arrivals</p>
+            <h2 className="mt-3 max-w-xl text-4xl md:text-5xl">Send the flight number. We will be at arrivals.</h2>
+            <p className="mt-3 max-w-xl text-foam/80">Mopa or Dabolim, including the landings after the last bus.</p>
           </div>
-          <Link href="/book" className="btn btn-gold">
+          <Link href="/#ride" className="btn btn-gold">
             Book a cab
           </Link>
         </div>

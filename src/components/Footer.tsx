@@ -36,7 +36,7 @@ export function Footer() {
                 </li>
               ))}
               <li>
-                <Link href="/book" className="hover:text-gold">
+                <Link href="/#ride" className="hover:text-gold">
                   Book a cab
                 </Link>
               </li>

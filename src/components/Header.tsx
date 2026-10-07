@@ -51,7 +51,7 @@ export function Header() {
         </nav>
 
         <div className="hidden items-center gap-3 lg:flex">
-          <Link href="/book" className="btn btn-gold">
+          <Link href="/#ride" className="btn btn-gold">
             Book a cab
           </Link>
         </div>
@@ -85,7 +85,7 @@ export function Header() {
                 {item.label}
               </Link>
             ))}
-            <Link href="/book" className="btn btn-gold mt-2">
+            <Link href="/#ride" className="btn btn-gold mt-2">
               Book a cab
             </Link>
           </div>

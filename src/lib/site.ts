@@ -1,9 +1,9 @@
 export const siteName = "Coastal Cabs";
 
-export const phoneDisplay = "+91 83240 11880";
-export const phoneTel = "+918324011880";
-export const whatsappNumber = "918324011880";
-export const email = "hello@coastalcabs.com";
+export const phoneDisplay = "+91 95112 40399";
+export const phoneTel = "+919511240399";
+export const whatsappNumber = "919511240399";
+export const email = "sayedashpak24@gmail.com";
 
 export const address = {
   line1: "Shop 4, St. Anthony Ward",
@@ -425,6 +425,9 @@ export function bookHref(input: {
   note?: string;
   fromPlace?: string;
   toPlace?: string;
+  name?: string;
+  phone?: string;
+  guests?: string;
 }) {
   const params = new URLSearchParams();
   if (input.from) params.set("from", input.from);
@@ -434,12 +437,43 @@ export function bookHref(input: {
   if (input.note) params.set("note", input.note);
   if (input.fromPlace) params.set("fromPlace", input.fromPlace);
   if (input.toPlace) params.set("toPlace", input.toPlace);
+  if (input.name) params.set("name", input.name);
+  if (input.phone) params.set("phone", input.phone);
+  if (input.guests) params.set("guests", input.guests);
   const query = params.toString();
-  return query ? `/book?${query}` : "/book";
+  return query ? `/?${query}#ride` : "/#ride";
 }
 
 export function whatsappHref(message: string) {
   return `https://wa.me/${whatsappNumber}?text=${encodeURIComponent(message)}`;
+}
+
+export function bookingMessage(draft: {
+  name?: string;
+  phone?: string;
+  from?: string;
+  to?: string;
+  date?: string;
+  time?: string;
+  cab?: string;
+  guests?: string;
+  fare?: string;
+  notes?: string;
+}) {
+  return [
+    `Hello ${siteName}, I need a cab in Goa.`,
+    draft.name?.trim() ? `Name: ${draft.name.trim()}` : "",
+    draft.phone?.trim() ? `Phone: ${draft.phone.trim()}` : "",
+    draft.from?.trim() ? `From: ${draft.from.trim()}` : "",
+    draft.to?.trim() ? `To: ${draft.to.trim()}` : "",
+    draft.date?.trim() ? `When: ${draft.date.trim()}${draft.time?.trim() ? ` at ${draft.time.trim()}` : ""}` : "",
+    draft.cab?.trim() ? `Cab: ${draft.cab.trim()}` : "",
+    draft.guests?.trim() ? `Guests: ${draft.guests.trim()}` : "",
+    draft.fare?.trim() ? `Fare: ${draft.fare.trim()}` : "",
+    draft.notes?.trim() ? `Notes: ${draft.notes.trim()}` : "",
+  ]
+    .filter(Boolean)
+    .join("\n");
 }
 
 export function cleanPhone(input: string) {

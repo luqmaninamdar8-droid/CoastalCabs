@@ -12,7 +12,7 @@ export default function NotFound() {
         <Link href="/" className="btn btn-sea">
           Back home
         </Link>
-        <Link href="/book" className="btn btn-ink">
+        <Link href="/#ride" className="btn btn-ink">
           Book a cab
         </Link>
       </div>
