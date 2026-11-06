@@ -16,7 +16,6 @@ export const nav = [
   { href: "/services", label: "Services" },
   { href: "/fleet", label: "Fleet" },
   { href: "/tours", label: "Tours" },
-  { href: "/fares", label: "Fares" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;
@@ -457,7 +456,6 @@ export function bookingMessage(draft: {
   time?: string;
   cab?: string;
   guests?: string;
-  fare?: string;
   notes?: string;
 }) {
   return [
@@ -469,7 +467,6 @@ export function bookingMessage(draft: {
     draft.date?.trim() ? `When: ${draft.date.trim()}${draft.time?.trim() ? ` at ${draft.time.trim()}` : ""}` : "",
     draft.cab?.trim() ? `Cab: ${draft.cab.trim()}` : "",
     draft.guests?.trim() ? `Guests: ${draft.guests.trim()}` : "",
-    draft.fare?.trim() ? `Fare: ${draft.fare.trim()}` : "",
     draft.notes?.trim() ? `Notes: ${draft.notes.trim()}` : "",
   ]
     .filter(Boolean)

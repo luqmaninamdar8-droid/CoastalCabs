@@ -124,9 +124,6 @@ export default function HomePage({
             title="A fare you can read before you land."
             text="Sedan starting prices, one way. Tolls stay extra."
           />
-          <Link href="/fares" className="btn btn-ink shrink-0">
-            Full fare sheet
-          </Link>
         </div>
         <div className="mt-10 grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr]">
           <Link

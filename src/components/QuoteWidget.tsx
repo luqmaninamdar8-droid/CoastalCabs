@@ -8,8 +8,6 @@ import {
   cabs,
   cleanPhone,
   defaultRide,
-  findFare,
-  inr,
   isCabId,
   isKnownPlace,
   otherPlace,
@@ -57,7 +55,6 @@ export function QuoteWidget({
   const missingLocation = (from === otherPlace && pickup.length < 2) || (to === otherPlace && drop.length < 2);
   const samePlace = Boolean(pickup) && pickup.toLowerCase() === drop.toLowerCase();
   const chosen = cabById(cab);
-  const fare = findFare(pickup, drop);
   const message = bookingMessage({
     name,
     phone: phone.trim() ? cleanPhone(phone) : "",
@@ -66,7 +63,6 @@ export function QuoteWidget({
     date,
     cab: `${chosen.name} (${chosen.cars})`,
     guests,
-    fare: fare ? `Starting fare ${inr(fare[cab])}` : "please quote this ride",
     notes,
   });
 
