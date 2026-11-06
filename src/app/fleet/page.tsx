@@ -1,7 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { PageHero } from "@/components/PageHero";
-import { bookHref, cabs, inr } from "@/lib/site";
+import { bookHref, cabs } from "@/lib/site";
 
 export const metadata: Metadata = {
   title: "Fleet",
@@ -31,10 +31,6 @@ export default function FleetPage() {
                 <h2 className="text-4xl">{cab.name}</h2>
                 <p className="mt-1 text-sm text-foam/80">{cab.cars}</p>
               </div>
-              <p className="text-right">
-                <span className="block text-xs uppercase tracking-wider text-foam/70">From</span>
-                <span className="font-display text-3xl">{inr(cab.startsAt)}</span>
-              </p>
             </div>
             <div className="space-y-4 p-6">
               <p className="text-sm leading-6 text-ink/75">{cab.bestFor}</p>

@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { bookHref, getTour, inr, tours } from "@/lib/site";
+import { bookHref, getTour, tours } from "@/lib/site";
 
 export function TourArticle({ slug }: { slug: string }) {
   const tour = getTour(slug);
@@ -38,8 +38,6 @@ export function TourArticle({ slug }: { slug: string }) {
       <aside className="space-y-4 lg:sticky lg:top-24 lg:self-start">
         <div className="paper-card p-5">
           <p className="text-xs font-bold uppercase tracking-[0.16em] text-sea">{tour.hours}</p>
-          <p className="mt-2 font-display text-4xl">{inr(tour.from)}</p>
-          <p className="text-sm text-ink/70">Starting sedan rate</p>
           <Link href={bookHref({ note: tour.title })} className="btn btn-gold mt-4 w-full">
             Book this tour
           </Link>

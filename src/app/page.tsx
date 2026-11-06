@@ -8,9 +8,6 @@ import {
   bookHref,
   cabs,
   coasts,
-  fares,
-  formatDrive,
-  inr,
   phoneDisplay,
   phoneTel,
   services,
@@ -63,8 +60,6 @@ export default function HomePage({
 }: {
   searchParams: Promise<RideSearch>;
 }) {
-  const featured = fares[0];
-  const board = fares.slice(1, 6);
   const [leadService, ...otherServices] = services;
   const [leadTour, ...sideTours] = tours.slice(0, 3);
   const [leadNote, ...otherNotes] = testimonials;
@@ -115,52 +110,6 @@ export default function HomePage({
           </Suspense>
         </div>
         <Wave />
-      </section>
-
-      <section className="wrap py-16 md:py-20">
-        <div className="flex flex-col justify-between gap-4 md:flex-row md:items-end">
-          <SectionTitle
-            eyebrow="Popular drops"
-            title="A fare you can read before you land."
-            text="Sedan starting prices, one way. Tolls stay extra."
-          />
-        </div>
-        <div className="mt-10 grid items-start gap-8 lg:grid-cols-[0.9fr_1.1fr]">
-          <Link
-            href={bookHref({ from: featured.from, to: featured.to, cab: "sedan" })}
-            className="paper-card fare-card group block p-7 pl-8"
-          >
-            <p className="text-xs font-bold uppercase tracking-[0.18em] text-laterite">Most booked</p>
-            <p className="mt-4 text-sm text-ink/55">{featured.from}</p>
-            <p className="font-display text-5xl leading-none md:text-6xl">to {featured.to}</p>
-            <p className="mt-4 text-sm text-ink/60">
-              {featured.km} km · {formatDrive(featured.minutes)}
-            </p>
-            <p className="mt-8 font-display text-4xl text-sea">{inr(featured.sedan)}</p>
-            <p className="text-xs font-bold uppercase tracking-[0.16em] text-ink/45">sedan · book this ride</p>
-          </Link>
-          <div>
-            {board.map((fare) => (
-              <Link
-                key={`${fare.from}-${fare.to}`}
-                href={bookHref({ from: fare.from, to: fare.to, cab: "sedan" })}
-                className="route-row"
-              >
-                <span>
-                  <span className="block text-sm text-ink/55">{fare.from}</span>
-                  <span className="font-display text-2xl">to {fare.to}</span>
-                  <span className="mt-1 block text-xs text-ink/50">
-                    {fare.km} km · {formatDrive(fare.minutes)}
-                  </span>
-                </span>
-                <span className="route-price text-right">
-                  <span className="block font-display text-2xl text-sea">{inr(fare.sedan)}</span>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-ink/40">sedan</span>
-                </span>
-              </Link>
-            ))}
-          </div>
-        </div>
       </section>
 
       <section className="bg-paper py-16 md:py-20">
@@ -227,7 +176,6 @@ export default function HomePage({
                 <p className="text-sm text-foam/65">{cab.cars}</p>
                 <p className="mt-6 font-display text-4xl">{cab.seats.replace(" guests", "")}</p>
                 <p className="text-xs font-bold uppercase tracking-[0.16em] text-foam/50">guests</p>
-                <p className="mt-4 text-sm text-foam/70">From {inr(cab.startsAt)}</p>
                 <Link href={bookHref({ cab: cab.id })} className="btn btn-gold mt-6 w-full">
                   Book {cab.name}
                 </Link>
@@ -258,7 +206,6 @@ export default function HomePage({
               </p>
               <h3 className="mt-2 text-4xl md:text-5xl">{leadTour.title}</h3>
               <p className="mt-3 max-w-md text-sm leading-6 text-foam/80">{leadTour.summary}</p>
-              <p className="mt-5 font-display text-4xl">{inr(leadTour.from)}</p>
             </div>
           </Link>
           <div className="grid gap-4">

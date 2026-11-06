@@ -11,7 +11,7 @@ export const metadata: Metadata = {
 const values = [
   {
     title: "Fare before the engine starts",
-    text: "You see the starting price on this site, then a confirmation on WhatsApp. Traffic on a point-to-point drop does not rewrite it.",
+    text: "We send the price on WhatsApp before the driver starts. Traffic on a point-to-point drop does not rewrite it.",
   },
   {
     title: "Drivers who live on these roads",

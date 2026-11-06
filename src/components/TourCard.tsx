@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { inr, type Tour } from "@/lib/site";
+import type { Tour } from "@/lib/site";
 
 export function TourCard({ tour }: { tour: Tour }) {
   return (
@@ -18,8 +18,7 @@ export function TourCard({ tour }: { tour: Tour }) {
       <div className="flex flex-1 flex-col p-5">
         <h3 className="text-2xl">{tour.title}</h3>
         <p className="mt-2 flex-1 text-sm leading-6 text-ink/75">{tour.summary}</p>
-        <div className="mt-5 flex items-center justify-between gap-3">
-          <p className="font-display text-3xl text-sea">{inr(tour.from)}</p>
+        <div className="mt-5 flex items-center justify-end gap-3">
           <Link href={`/tours/${tour.slug}`} className="btn btn-ink">
             See the day
           </Link>
