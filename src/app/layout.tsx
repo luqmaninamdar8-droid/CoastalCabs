@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Script from "next/script";
 import { Fraunces, Manrope } from "next/font/google";
 import { Footer } from "@/components/Footer";
 import { Header } from "@/components/Header";
@@ -32,6 +33,16 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       className={`${manrope.variable} ${fraunces.variable} h-full scroll-smooth antialiased`}
     >
       <body className="flex min-h-full flex-col">
+        <Script
+          async
+          src="https://www.googletagmanager.com/gtm.js?id=GTM-N84NPNGG"
+          strategy="afterInteractive"
+        />
+        <Script id="gtm-init" strategy="afterInteractive">
+          {`window.dataLayer = window.dataLayer || [];
+function gtag(){dataLayer.push(arguments);}
+gtag('js', new Date());`}
+        </Script>
         <a
           href="#content"
           className="sr-only focus:not-sr-only focus:absolute focus:top-3 focus:left-3 focus:z-50 focus:rounded-full focus:bg-paper focus:px-4 focus:py-2"
