@@ -16,6 +16,7 @@ export const nav = [
   { href: "/services", label: "Services" },
   { href: "/fleet", label: "Fleet" },
   { href: "/tours", label: "Tours" },
+  { href: "/fares", label: "Fares" },
   { href: "/about", label: "About" },
   { href: "/contact", label: "Contact" },
 ] as const;
@@ -108,34 +109,35 @@ export const defaultRide = {
 };
 
 export const fares: Fare[] = [
-  { from: "Mopa Airport (GOX)", to: "Calangute", km: 42, minutes: 70, sedan: 2200, suv: 2800, premium: 3400, tempo: 5200 },
+  { from: "Mopa Airport (GOX)", to: "Old Goa", km: 32, minutes: 50, sedan: 1700, suv: 2200, premium: 2600, tempo: 4000 },
   { from: "Mopa Airport (GOX)", to: "Panaji", km: 36, minutes: 55, sedan: 1800, suv: 2400, premium: 2900, tempo: 4500 },
+  { from: "Mopa Airport (GOX)", to: "Candolim", km: 40, minutes: 68, sedan: 2100, suv: 2700, premium: 3300, tempo: 5000 },
+  { from: "Mopa Airport (GOX)", to: "Calangute", km: 42, minutes: 70, sedan: 2200, suv: 2800, premium: 3400, tempo: 5200 },
+  { from: "Mopa Airport (GOX)", to: "Baga", km: 44, minutes: 75, sedan: 2300, suv: 2900, premium: 3500, tempo: 5400 },
+  { from: "Mopa Airport (GOX)", to: "Anjuna", km: 52, minutes: 85, sedan: 2700, suv: 3400, premium: 4100, tempo: 6300 },
   { from: "Mopa Airport (GOX)", to: "Palolem", km: 98, minutes: 160, sedan: 4500, suv: 5600, premium: 6500, tempo: 8600 },
+  { from: "Dabolim Airport (GOI)", to: "Panaji", km: 30, minutes: 50, sedan: 1500, suv: 1900, premium: 2400, tempo: 3700 },
+  { from: "Dabolim Airport (GOI)", to: "Candolim", km: 36, minutes: 70, sedan: 1700, suv: 2200, premium: 2800, tempo: 4300 },
   { from: "Dabolim Airport (GOI)", to: "Calangute", km: 38, minutes: 75, sedan: 1800, suv: 2400, premium: 3000, tempo: 4600 },
+  { from: "Dabolim Airport (GOI)", to: "Benaulim", km: 38, minutes: 60, sedan: 1800, suv: 2300, premium: 2900, tempo: 4500 },
   { from: "Dabolim Airport (GOI)", to: "Baga", km: 40, minutes: 80, sedan: 1900, suv: 2500, premium: 3100, tempo: 4700 },
   { from: "Dabolim Airport (GOI)", to: "Palolem", km: 62, minutes: 100, sedan: 2800, suv: 3500, premium: 4200, tempo: 6000 },
   { from: "Panaji", to: "Calangute", km: 16, minutes: 35, sedan: 900, suv: 1200, premium: 1600, tempo: 2500 },
   { from: "Calangute", to: "Anjuna", km: 14, minutes: 30, sedan: 800, suv: 1100, premium: 1400, tempo: 2200 },
   { from: "Panaji", to: "Old Goa", km: 9, minutes: 20, sedan: 600, suv: 850, premium: 1100, tempo: 1800 },
-  { from: "Margao", to: "Palolem", km: 37, minutes: 65, sedan: 1600, suv: 2100, premium: 2600, tempo: 4000 },
-  { from: "Calangute", to: "Dudhsagar", km: 75, minutes: 130, sedan: 4800, suv: 5800, premium: 6800, tempo: 9000 },
   { from: "Candolim", to: "Mapusa", km: 10, minutes: 25, sedan: 600, suv: 800, premium: 1100, tempo: 1800 },
+  { from: "Margao", to: "Palolem", km: 37, minutes: 65, sedan: 1600, suv: 2100, premium: 2600, tempo: 4000 },
+  { from: "Margao", to: "Baga", km: 45, minutes: 80, sedan: 2000, suv: 2600, premium: 3100, tempo: 4700 },
+  { from: "Panaji", to: "Palolem", km: 56, minutes: 95, sedan: 2400, suv: 3000, premium: 3600, tempo: 5400 },
+  { from: "Candolim", to: "Palolem", km: 64, minutes: 108, sedan: 2800, suv: 3500, premium: 4200, tempo: 6200 },
+  { from: "Calangute", to: "Dudhsagar", km: 75, minutes: 130, sedan: 4800, suv: 5800, premium: 6800, tempo: 9000 },
 ];
-
-export const dayHires: ({ name: string; hours: number; km: number } & Prices)[] = [
-  { name: "Half day", hours: 4, km: 40, sedan: 1600, suv: 2200, premium: 2800, tempo: 4200 },
-  { name: "Full day", hours: 8, km: 80, sedan: 2800, suv: 3600, premium: 4500, tempo: 6800 },
-  { name: "Long day", hours: 12, km: 120, sedan: 3900, suv: 5000, premium: 6200, tempo: 9000 },
-];
-
-export const extraRates: Prices = { sedan: 20, suv: 24, premium: 28, tempo: 36 };
 
 export const fareNotes = [
   "Fares are starting one-way rates for a point-to-point drop. The desk confirms the figure on WhatsApp before the cab moves.",
   "The first 45 minutes after a domestic landing are included. After that, waiting is ₹150 per half hour.",
   "Rides between 10:00 pm and 6:00 am carry a 15% night addition.",
   "Tolls, parking, and Dudhsagar jeep tickets are extra and paid as they come.",
-  "Kilometres past a day-hire package are billed at the per-km rate for that cab.",
 ];
 
 export const faqs = [
@@ -145,7 +147,7 @@ export const faqs = [
   },
   {
     q: "Can the fare change in traffic?",
-    a: "Point-to-point airport and town drops stay on the confirmed fare. Day hires change only if you cross the included kilometres or hours.",
+    a: "Point-to-point airport and town drops stay on the confirmed fare.",
   },
   {
     q: "How do I pay?",
